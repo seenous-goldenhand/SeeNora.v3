@@ -1,0 +1,78 @@
+Table owner {
+  id integer [primary key]
+  name varchar
+  created_at timestamp
+}
+
+Table factory_lines {
+  id integer [primary key]
+  owner_id integer [not null]
+  created_at timestamp
+}
+
+Table departments {
+  id integer [primary key]
+  name varchar
+  factory_line_id integer [not null]
+}
+
+Table machines {
+  id integer [primary key]
+  department_id integer [not null]
+  active bool
+}
+
+Table basic_info {
+  id integer [primary key]
+  machine_id integer [ref: > machines.id]
+  name varchar
+  type varchar
+  image text
+  tag varchar 
+  priority integer 
+  Power varchar 
+  foundation varchar 
+  group varchar 
+  collection_time timestamp 
+  points_count integer
+}
+
+Table machine_parts {
+  id integer [primary key]
+  name varchar
+  critical bool
+  machine_id integer [not null]
+}
+
+Table points {
+  id integer [primary key]
+  machine_type varchar
+  machine_part integer [ref: > machine_parts.id, not null]
+  RPM integer 
+  bearing_type varchar 
+}
+
+Table measurement_nodes {
+  id integer [primary key]
+  machine_id integer [ref: > machines.id, not null]
+  point_id integer [ref: > points.id, not null]   
+
+}
+
+Table sessions {
+  id integer [primary key]
+  name varchar
+  measurement_node integer [ref: > measurement_nodes.id]
+  measurement_variable_rpm integer
+  measurement_direction varchar
+  measurement_duration integer 
+  datetime timestamp
+}
+
+Ref owner_factories: factory_lines.owner_id ?> owner.id // many-to-one
+Ref factory_departments: departments.factory_line_id ?> factory_lines.id // many-to-one
+Ref department_machines: machines.department_id ?> departments.id // many-to-one
+
+
+
+
